@@ -206,26 +206,36 @@ def create_influx_client():
 
 message_times = {}
 
-async def send_alert(matrix_client, msg):
+async def clear_alert(matrix_client, msg, data = None):
+    if not matrix_client:
+        return
+    if (msg not in message_times or message_times[msg] + alert_timeout < t):
+        return
+    msg_times.pop(msg, None)  
+    print(f'Clearing alert "{msg}"')
+    await matrix_snd_msg(matrix_client, matrix_client,rooms,
+            'alert cleared: ' + msg + ' : data=' + str(data))
+
+async def send_alert(matrix_client, msg, data = None):
     if not matrix_client:
         return
     t = time.monotonic()
-    # don't alert if we alerted within the alert timeout
     if (msg in message_times and message_times[msg] + alert_timeout > t):
         return
     message_times[msg] = time.monotonic()
     print(f'Sending alert "{msg}"')
-    #await matrix_send_msg(matrix_client, matrix_client.rooms, msg);
+    await matrix_send_msg(matrix_client, matrix_client.rooms,
+            'alert: ' + msg + ' : data=' + str(data));
 
 async def send_alerts_if_needed(matrix_client, simplepoint):
     for alert in Alerts:
-        alert.setdefault('state', False)
         val = simplepoint[alert['metric']]
-        if not alert['fun'](val):
-            alert['state'] = False;
-            continue
-        msg = alert['msg'] + ' : ' + str(alert['metric']) + '='+ str(val)
-        await send_alert(matrix_client, msg);
+        if alert['fun'](val):
+            await send_alert(matrix_client, alert['msg'],
+                    str(alert['metric']) + '='+ str(val))
+        else:
+            await clear_alert(matrix_client, alert['msg'],
+                    str(alert['metric']) + '='+ str(val))
 
 async def main():
     print('Reading from Solark at' + str(solark_params))
@@ -242,11 +252,15 @@ async def main():
         if not client['modbus']:
             await create_modbus_client()
             await send_alert(matrix_client, "modbus not connected")
+        else:
+            await clear_alert(matrix_client, "modbus not connected")
         modbus_client = client['modbus']
             
         if not client['influx'] :
             createInfluxClient()
             await send_alert(matrix_client, "influx not connected")
+        else:
+            await clear_alert(matrix_client, "influx not connected")
         influx_client = client['influx']
 
         simplepoint = await modbus_get_datapoint(modbus_client)
