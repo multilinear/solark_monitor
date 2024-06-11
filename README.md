@@ -21,7 +21,7 @@ For a definition of the metrics that can be gathered see: [[https://www.dth.net/
 
 ## Testing:
 
-I have a Solark-15K-2P-N, so that is what I'm testing with. I'm running this service on a small Gentoo x86_64 machine. I have a linux-compatible RS-232 USB adapter for which I have support in my kernel. This is connected the external RS-232 port in place of the wireless uplink. I understand it's possible to use the RS-485 link that is inside the box, but from reading about this I believe there are potentially some complications if already using this for the batteries.
+I have a Solark-15K-2P-N, so that is what I'm testing with. I'm running this service on a small Gentoo x86_64 machine. I have a linux-compatible RS-232 USB adapter for which I have support in my kernel. This is connected to the external RS-232 port in place of the wireless uplink. I understand it's possible to use the RS-485 link that is inside the box, but from reading about this I believe there are potentially some complications if already using this for the batteries.
 
 ## Design choices:
 
