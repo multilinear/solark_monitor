@@ -213,7 +213,7 @@ async def clear_alert(matrix_client, msg, data = None):
         return
     msg_times.pop(msg, None)  
     print(f'Clearing alert "{msg}"')
-    await matrix_snd_msg(matrix_client, matrix_client,rooms,
+    await matrix_snd_msg(matrix_client, matrix_client.rooms,
             'alert cleared: ' + msg + ' : data=' + str(data))
 
 async def send_alert(matrix_client, msg, data = None):
