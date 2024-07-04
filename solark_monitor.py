@@ -209,11 +209,11 @@ message_times = {}
 async def clear_alert(matrix_client, msg, data = None):
     if not matrix_client:
         return
-    if (msg not in message_times or message_times[msg] + alert_timeout < t):
+    if (msg not in message_times):
         return
-    msg_times.pop(msg, None)  
+    message_times.pop(msg, None)  
     print(f'Clearing alert "{msg}"')
-    await matrix_snd_msg(matrix_client, matrix_client.rooms,
+    await matrix_send_msg(matrix_client, matrix_client.rooms,
             'alert cleared: ' + msg + ' : data=' + str(data))
 
 async def send_alert(matrix_client, msg, data = None):
