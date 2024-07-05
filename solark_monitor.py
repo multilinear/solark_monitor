@@ -161,6 +161,7 @@ class Solark:
         except pymodbus.ModbusException as e:
             print(f'modbus exception {e} while getting datapoint')
             self._client = None
+            return None
         return simplepoint
 
     async def reconnect(self):
@@ -235,18 +236,20 @@ class Influx:
     """ writes a simplepoint to influxDB """
     async def write_point(self, simplepoint) :
         influxpoint = Influx.point_to_influxpoint(simplepoint)
-        await self.write_influxpoint(simplepoint)
+        return await self.write_influxpoint(influxpoint)
 
     """ writes an influxpoint to influxDB """
     async def write_influxpoint(self, influxpoint) :
         if not self._client:
-            return
+            return False
         try:
             for point in influxpoint:
                 self._client.write(bucket=self._params['bucket'], record=point)
         except Exception as e:
             print(f'Exception while writing to influx: {e}')
             self._client = None 
+            return False
+        return True;
 
     """ Connect with params from our last connection """
     async def reconnect(self):
@@ -360,12 +363,14 @@ async def main():
             await clear_alert(matrix, "solark modbus not connected")
             
         if not influx:
-            influx.reconenct()
+            influx.reconnect()
             await send_alert(matrix, "influx not connected")
         else:
             await clear_alert(matrix, "influx not connected")
 
         simplepoint = await solark.get_datapoint()
+        if simplepoint is None:
+            continue
         await send_alerts_if_needed(matrix, simplepoint)
         await influx.write_point(simplepoint)
         await asyncio.sleep(loop_delay_seconds)
