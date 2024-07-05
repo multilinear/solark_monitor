@@ -10,6 +10,7 @@ influx_params = {
     'token': 'your-influx-token', 
     'bucket': 'your-influx-bucket', 
     'org': 'your-influx-org', 
+    'url': 'http://localhost:8083',
 } 
  
 solark_params = { 
@@ -48,3 +49,5 @@ Alerts = [
 ]
 
 alert_timeout = 24*60*60 # will re-alert in 24 hours
+
+loop_delay_seconds = 10
