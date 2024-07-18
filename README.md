@@ -1,7 +1,17 @@
 # solark_monitor
+DEPRECATED:
+This has been replaced by https://github.com/multilinear/solark_monitor_rust
+which has far better error handling, is more stable, and more efficient, due in
+large part to being written in rust. The python version is left here though as a
+potentially useful basis for others wanting to do something similar in python.
+
 Poles a solark power inverter over modbus and places results in influxDB, while also sending alerts on interesting conditions to matrix.
 
 This script is intended to run on a machine proximal to your solark connected to it via a cable. It poles the solark over modbus, gathers the requested metrics. You can write "alerts" where if the lambda evaluates to true a message will be sent to matrix. The metrics are also dumped into influxDB.
+
+: This is basically deprecated in favor of
+
+
 
 ## Installation/dependencies
 It's really just this script, keep these two in the same directory so one can import the other. You'll need to find the dependencies.
