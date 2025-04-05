@@ -1,6 +1,6 @@
 # solark_monitor
 DEPRECATED:
-This has been replaced by https://github.com/multilinear/solark_monitor_rust
+This has been replaced by https://codeberg.org/multilinear/solark_monitor
 which has far better error handling, is more stable, and more efficient, due in
 large part to being written in rust. The python version is left here though as a
 potentially useful basis for others wanting to do something similar in python.
